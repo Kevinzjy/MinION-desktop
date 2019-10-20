@@ -51,6 +51,9 @@ BARCODING = collections.OrderedDict([
     ('native_13-24', ['--barcode_kits', 'EXP-NBD114', '--trim_barcodes']),
     ('native_1-24',  ['--barcode_kits', 'EXP-NBD104 EXP-NBD114', '--trim_barcodes']),
     ('rapid_1-12',   ['--barcode_kits', 'SQK-RBK004', '--trim_barcodes']),
+    ('pcr_1-12',       ['--barcode_kits', 'EXP-PBC001', '--trim_barcodes']),
+    ('pcr_1-96',       ['--barcode_kits', 'EXP-PBC096', '--trim_barcodes']),
+    # ('default',      ['--barcode_kits', 'EXP-NBD104 EXP-NBD114 EXP-PBC001 EXP-PBC096', '--trim_barcodes']),
     ('none',         [])
 ])
 
@@ -372,7 +375,7 @@ def read_sequencing_summary(out_dir, columns):
 
 
 def get_guppy_command(in_dir, out_dir, barcodes, model, cpu):
-    guppy_command = ['guppy_basecaller',
+    guppy_command = ['/opt/ONT/ont-guppy/bin/guppy_basecaller',  
                      '--input_path', str(in_dir),
                      '--save_path', str(out_dir)]
     if not cpu:
