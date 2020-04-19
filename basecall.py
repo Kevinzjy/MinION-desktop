@@ -33,6 +33,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import hashlib
 
 
 BASECALLING = collections.OrderedDict([
@@ -146,10 +147,14 @@ def check_arguments(args):
         sys.exit('Error: {} is a file (must be a directory)'.format(args.out_dir))
 
 
+def hash_filename(f):
+    return hashlib.sha256(str(f).encode()).hexdigest()
+
+
 def check_for_reads(batch_size, in_dir, out_dir):
     all_fast5_files = [x.resolve() for x in in_dir.glob('**/*.fast5')]
     already_basecalled = load_already_basecalled(out_dir)
-    new_fast5_files = [f for f in all_fast5_files if f.name not in already_basecalled]
+    new_fast5_files = [f for f in all_fast5_files if hash_filename(f) not in already_basecalled]
     return sorted(f for f in new_fast5_files)[:batch_size], all_fast5_files
 
 
@@ -167,7 +172,7 @@ def add_to_already_basecalled(fast5s, out_dir):
     already_basecalled_filename = out_dir / 'basecalled_filenames'
     with open(str(already_basecalled_filename), 'at') as already_basecalled:
         for fast5 in fast5s:
-            already_basecalled.write(fast5.name)
+            already_basecalled.write(hash_filename(fast5))
             already_basecalled.write('\n')
 
 
@@ -206,7 +211,7 @@ def copy_reads_to_temp_in(new_fast5s, temp_in):
     plural = '' if len(new_fast5s) == 1 else 's'
     print('Read{} to be basecalled:'.format(plural))
     for f in new_fast5s:
-        shutil.copy(str(f), str(temp_in))
+        shutil.copy(str(f), str(temp_in / '{}.fast5'.format(hash_filename(f))))
         print('    {}'.format(str(f)))
     print()
 
