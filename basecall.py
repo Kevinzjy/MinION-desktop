@@ -380,7 +380,7 @@ def read_sequencing_summary(out_dir, columns):
 
 
 def get_guppy_command(in_dir, out_dir, barcodes, model, cpu):
-    guppy_command = ['/opt/ONT/ont-guppy/bin/guppy_basecaller',  
+    guppy_command = ['/opt/ont-guppy/bin/guppy_basecaller',  
                      '--input_path', str(in_dir),
                      '--save_path', str(out_dir)]
     if not cpu:
